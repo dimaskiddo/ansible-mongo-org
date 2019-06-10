@@ -3,7 +3,7 @@
 full_uninstall: 'false'
 
 # Default Value for MongoDB Distribution
-mongo_distribution: 'percona'
+mongo_distribution: 'mongodb-org'
 
 # Default Value for MongoDB Major Version
 mongo_version_major: '3'
