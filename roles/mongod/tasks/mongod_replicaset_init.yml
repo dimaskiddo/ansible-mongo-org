@@ -1,0 +1,14 @@
+---
+- name: Initiate ReplicaSet For MongoDB Node
+  shell: mongo admin --port {{ mongo_port }} --eval "rs.initiate();"
+  when:
+    - primary
+
+- name: Wait For MongoDB Node ReplicaSet Primary Election
+  shell: mongo admin --port {{ mongo_port }} --eval "rs.isMaster().ismaster;"
+  register: mongod_primary_status
+  until: mongod_primary_status.stdout.find("true") != -1
+  retries: 3
+  delay: 5
+  when:
+    - primary

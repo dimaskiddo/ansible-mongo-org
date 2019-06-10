@@ -1,0 +1,32 @@
+---
+- include: facts.yml
+
+- include: mongo_services.yml
+
+- include: mongo_cleanups.yml
+
+- include: mongo_keys.yml
+
+- include: zfs_mounts.yml
+  when:
+    - full_uninstall
+    - zfs_backend
+    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
+
+- include: mongo_directories.yml
+
+- include: mongo_packages.yml
+  when:
+    - full_uninstall
+
+- include: mongo_users.yml
+  when:
+    - full_uninstall
+
+- include: zfs_blocks.yml
+  when:
+    - full_uninstall
+    - zfs_backend
+    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
+
+- include: os_cleanups.yml

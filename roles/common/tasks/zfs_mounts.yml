@@ -1,0 +1,17 @@
+---
+- name: Wait for 5 Seconds Before Mounting ZFS Dataset
+  wait_for:
+    timeout: 5
+
+- name: Mount ZFS Dataset to MongoDB Directory
+  mount:
+    path: /var/lib/mongodb
+    src: "/dev/zvol/{{ zfs_pool_name }}/mongodb"
+    fstype: xfs
+    opts: defaults
+    passno: 2
+    state: mounted
+
+- name: Wait for 5 Seconds After Mounting ZFS Dataset
+  wait_for:
+    timeout: 5

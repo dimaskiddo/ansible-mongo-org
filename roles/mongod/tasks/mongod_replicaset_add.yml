@@ -1,0 +1,22 @@
+---
+- name: Generate Script For Adding Other MongoDB Node ReplicaSet
+  template:
+    src: mongod_replicaset_add.js.j2
+    dest: /tmp/mongod_replicaset_add.js
+    owner: root
+    group: root
+    mode: 0644
+  when:
+    - primary
+
+- name: Adding Other MongoDB Node ReplicaSet
+  shell: mongo admin --port {{ mongo_port }} -u admin -p {{ mongo_admin_password }} /tmp/mongod_replicaset_add.js
+  when:
+    - primary
+  
+- name: Clean-up Generated Script For Adding Other MongoDB Node ReplicaSet
+  file:
+    path: /tmp/mongod_replicaset_add.js
+    state: absent
+  when:
+    - primary

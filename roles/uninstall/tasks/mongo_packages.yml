@@ -1,0 +1,42 @@
+---
+- name: Uninstall MongoDB Router Packages
+  apt:
+    name: "{{ item }}"
+    force_apt_get: yes
+    purge: yes
+    state: absent
+  with_items:
+    - mongodb-org-mongos
+    - mongodb-org-shell
+    - mongodb-org-tools
+  when:
+    - mongo_distribution == 'mongodb-org'
+    - inventory_hostname in groups['mongos']
+
+- name: Uninstall MongoDB Node Packages
+  apt:
+    name: "{{ item }}"
+    force_apt_get: yes
+    purge: yes
+    state: absent
+  with_items:
+    - mongodb-org-server
+    - mongodb-org-shell
+    - mongodb-org-tools
+  when:
+    - mongo_distribution == 'mongodb-org'
+    - inventory_hostname not in groups['mongos']
+
+- name: Uninstall MongoDB Repository
+  file:
+    path: /etc/apt/sources.list.d/mongodb-org-{{ mongo_version_major }}.{{ mongo_version_minor }}.list
+    state: absent
+  when:
+    - galera_distribution == 'mariadb-org'
+
+- name: Uninstall MongoDB Keyring
+  apt_key:
+    id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+    state: absent
+  when:
+    - galera_distribution == 'mariadb-org'

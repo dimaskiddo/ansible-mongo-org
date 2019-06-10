@@ -1,0 +1,19 @@
+---
+- name: Generate Script For Intiate MongoDB Config Server Superuser
+  template:
+    src: mongoc_create_admin.js.j2
+    dest: /tmp/mongoc_create_admin.js
+    owner: root
+    group: root
+    mode: 0644
+  run_once: true
+  
+- name: Intiate MongoDB Config Server Superuser
+  shell: mongo admin --port {{ mongo_port }} /tmp/mongoc_create_admin.js
+  run_once: true
+  
+- name: Clean-up Generated Script For Intiate MongoDB Config Server Superuser
+  file:
+    path: /tmp/mongoc_create_admin.js
+    state: absent
+  run_once: true

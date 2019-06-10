@@ -1,0 +1,9 @@
+---
+- name: Remove Generated MongoDB Keyfile
+  file:
+    path: /tmp/keyfile.pem
+    state: absent
+  delegate_to: "{{ item }}"
+  with_items:
+    - localhost
+  run_once: true

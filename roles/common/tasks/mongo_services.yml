@@ -1,0 +1,99 @@
+---
+- name: Reload MongoDB Service
+  systemd:
+    daemon_reload: yes
+  when:
+    - service_init_status.stat.islnk is defined
+    - service_init_status.stat.islnk
+
+- name: Get MongoDB Node Service Info
+  shell: service mongod status | grep not-found || true
+  args:
+    warn: false
+  register: mongod_service_info
+  when:
+    - service_init_status.stat.exists
+    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
+
+- name: Disable MongoDB Node Service
+  service:
+    name: mongod
+    enabled: no
+    state: stopped
+  when:
+    - mongod_service_info.stdout.find("not-found") == -1
+    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
+
+- name: Wait for 5 Seconds Before Killing All MongoDB Node Service
+  wait_for:
+    timeout: 5
+  when:
+    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
+
+- name: Kill All Remaining MongoDB Node Service
+  shell: killall mongod || true
+  args:
+    warn: false
+  when:
+    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
+
+- name: Wait for 5 Seconds After Killing All MongoDB Node Service
+  wait_for:
+    timeout: 5
+  when:
+    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
+
+- name: Remove Stale PIDs & Sockets MongoDB Node Service
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /var/run/mongodb/mongod.pid
+  when:
+    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
+
+- name: Get MongoDB Router Service Info
+  shell: service mongos status | grep not-found || true
+  args:
+    warn: false
+  register: mongos_service_info
+  when:
+    - service_init_status.stat.exists
+    - inventory_hostname in groups['mongos']
+
+- name: Disable MongoDB Router Service
+  service:
+    name: mongos
+    enabled: no
+    state: stopped
+  when:
+    - mongos_service_info.stdout.find("not-found") == -1
+    - inventory_hostname in groups['mongos']
+
+- name: Wait for 5 Seconds Before Killing All MongoDB Router Service
+  wait_for:
+    timeout: 5
+  when:
+    - inventory_hostname in groups['mongos']
+
+- name: Kill All Remaining MongoDB Router Service
+  shell: killall mongos || true
+  args:
+    warn: false
+  when:
+    - inventory_hostname in groups['mongos']
+
+- name: Wait for 5 Seconds After Killing All MongoDB Router Service
+  wait_for:
+    timeout: 5
+  when:
+    - inventory_hostname in groups['mongos']
+
+- name: Remove Stale PIDs & Sockets MongoDB Router Service
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /var/run/mongodb/mongos.pid
+  when:
+    - inventory_hostname in groups['mongos']

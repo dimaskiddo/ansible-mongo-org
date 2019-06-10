@@ -1,0 +1,91 @@
+---
+- name: Fail if ZFS Block Device is not Empty
+  fail:
+    msg: "ZFS Block Device is not Empty, Please Clean The Block Device Manually!"
+  when:
+    - not zfs_block_wipe
+    - zfs_block_info.partitions | length > 0
+
+- name: Clean ZFS Block Device for MongoDB
+  parted:
+    device: "/dev/{{ zfs_block_device }}"
+    number: "{{ item.num }}"
+    state: absent
+  with_items:
+    - "{{ zfs_block_info.partitions }}"
+  when:
+    - zfs_block_wipe
+    - zfs_block_info.partitions | length > 0
+
+- name: Create ZFS Block Device Partition for MongoDB
+  parted:
+    device: "/dev/{{ zfs_block_device }}"
+    number: 1
+    part_type: primary
+    part_start: 0%
+    part_end: 100%
+    state: present
+
+- name: Get ZFS Pool Lists
+  shell: zpool list
+  register: zfs_pool_lists
+
+- name: Fail if ZFS Pool Already Exists
+  fail:
+    msg: "ZFS Pool Already Exists, Please Remove The Pool Manually!"
+  when:
+    - not zfs_pool_wipe
+    - zfs_pool_lists.stdout.find(zfs_pool_name) != -1
+
+- name: Remove ZFS Pool for MongoDB
+  shell: zpool destroy -f {{ zfs_pool_name }}
+  when:
+    - zfs_pool_wipe
+    - zfs_pool_lists.stdout.find(zfs_pool_name) != -1
+
+- name: Create ZFS Pool for MongoDB
+  shell: zpool create {{ zfs_pool_name }} -O compression=lz4 -o ashift=12 /dev/{{ zfs_block_device }}1
+  when:
+    - zfs_pool_lists.stdout.find(zfs_pool_name) == -1
+
+- name: Get ZFS Dataset Lists
+  shell: zfs list
+  register: zfs_dataset_lists
+
+- name: Fail if ZFS Dataset Already Exists
+  fail:
+    msg: "ZFS Dataset Already Exists, Please Remove The Dataset Manually!"
+  when:
+    - not zfs_dataset_wipe
+    - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") != -1
+
+- name: Remove ZFS Dataset for MongoDB
+  shell: zfs destroy -fR {{ zfs_pool_name }}/mongodb
+  when:
+    - not zfs_dataset_wipe
+    - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") != -1
+
+- name: Create ZFS Dataset for MongoDB for MongoDB Config Server
+  shell: zfs create -s -o volblocksize=64k -V {{ zfs_dataset_size_mongoc }} {{ zfs_pool_name }}/mongodb
+  when:
+    - inventory_hostname in groups['mongoc']
+    - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") == -1
+
+- name: Create ZFS Dataset for MongoDB for MongoDB Node
+  shell: zfs create -s -V {{ zfs_dataset_size_mongod }} {{ zfs_pool_name }}/mongodb
+  when:
+    - inventory_hostname in groups['mongod']
+    - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") == -1
+
+- name: Get ZFS Dataset Device Status for MongoDB
+  stat:
+    path: "/dev/zvol/{{ zfs_pool_name }}/mongodb"
+  register: zfs_dataset_mongo_status
+
+- name: Format ZFS Dataset Device for MongoDB
+  filesystem:
+    dev: "/dev/zvol/{{ zfs_pool_name }}/mongodb"
+    fstype: xfs
+    force: yes
+  when:
+    - zfs_dataset_mongo_status.stat.exists

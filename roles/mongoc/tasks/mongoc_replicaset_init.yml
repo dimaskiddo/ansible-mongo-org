@@ -1,0 +1,12 @@
+---
+- name: Initiate ReplicaSet For MongoDB Config Server
+  shell: mongo admin --port {{ mongo_port }} --eval "rs.initiate();"
+  run_once: true
+  
+- name: Wait For MongoDB Config Server ReplicaSet Primary Election
+  shell: mongo admin --port {{ mongo_port }} --eval "rs.isMaster().ismaster;"
+  register: mongoc_primary_status
+  until: mongoc_primary_status.stdout.find("true") != -1
+  retries: 3
+  delay: 5
+  run_once: true

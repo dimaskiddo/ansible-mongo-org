@@ -1,0 +1,31 @@
+# Shere to write logging data.
+systemLog:
+  destination: file
+  path: /var/log/mongodb/mongos.log
+  logAppend: true
+
+# How the process runs
+processManagement:
+  fork: true
+  pidFilePath: /var/run/mongodb/mongos.pid
+
+# Network interfaces
+net:
+  port: {{ mongo_port }}
+  bindIp: 0.0.0.0
+
+# How to secure it
+security:
+  keyFile: /var/lib/mongodb/pki/keyfile.pem
+
+# How shard runs
+sharding:
+{% set mongoc_hosts = '' %}
+{% for mongoc_host in groups['mongoc'] %}
+{%  if loop.last %}
+{%    set mongoc_hosts = mongoc_hosts + hostvars[mongoc_host].mongo_ip + ':' + hostvars[mongoc_host].mongo_port %}
+  configDB: repl-config/{{ mongoc_hosts }}
+{%  else %}
+{%    set mongoc_hosts = mongoc_hosts + hostvars[mongoc_host].mongo_ip + ':' + hostvars[mongoc_host].mongo_port + ',' %}
+{%  endif %}
+{% endfor %}

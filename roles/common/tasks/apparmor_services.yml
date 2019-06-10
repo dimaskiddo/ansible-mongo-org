@@ -1,0 +1,23 @@
+---
+- name: Reload App Armor Service
+  systemd:
+    daemon_reload: yes
+  when:
+    - service_init_status.stat.islnk is defined
+    - service_init_status.stat.islnk
+
+- name: Get App Armor Service Info
+  shell: service apparmor status | grep not-found || true
+  args:
+    warn: false
+  register: apparmor_service_info
+  when:
+    - service_init_status.stat.exists
+
+- name: Disable App Armor Service
+  service:
+    name: apparmor
+    enabled: no
+    state: stopped
+  when:
+    - apparmor_service_info.stdout.find("not-found") == -1

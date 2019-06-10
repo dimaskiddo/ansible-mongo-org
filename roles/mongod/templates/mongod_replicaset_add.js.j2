@@ -1,0 +1,12 @@
+{% for mongod_host in groups['mongod'] %}
+{%  if not hostvars[mongod_host].primary %}
+{%    if hostvars[mongod_host].replica_name == replica_name %}
+{%      if not hostvars[mongod_host].arbiter %}
+rs.add("{{ hostvars[mongod_host].mongo_ip }}:{{ hostvars[mongod_host].mongo_port }}");
+{%      else %}
+rs.addArb("{{ hostvars[mongod_host].mongo_ip }}:{{ hostvars[mongod_host].mongo_port }}");
+{%      endif %}
+{%    endif %}
+{%  endif %}
+sleep(1000);
+{% endfor %}

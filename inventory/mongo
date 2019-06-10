@@ -1,0 +1,21 @@
+[all:vars]
+mongo_version_major=3
+mongo_version_minor=6
+mongo_admin_password=admin
+
+[mongos]
+10.10.250.11
+10.10.250.12
+
+[mongoc]
+10.10.250.13
+10.10.250.14
+10.10.250.15
+
+[mongod]
+10.10.250.16 replica_name=shard-1 primary=true
+10.10.250.17 replica_name=shard-1
+10.10.250.18 replica_name=shard-1 arbiter=true
+10.10.250.19 replica_name=shard-2 primary=true
+10.10.250.20 replica_name=shard-2
+10.10.250.21 replica_name=shard-2 arbiter=true

@@ -1,0 +1,24 @@
+---
+- name: Remove MongoDB Logs Directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /var/log/mongodb
+
+- name: Remove MongoDB Run Directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /var/run/mongodb
+
+- name: Remove MongoDB Databases Directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /var/lib/mongodb
+    - /var/lib/mongodb/data
+    - /var/lib/mongodb/log
+    - /var/lib/mongodb/pki

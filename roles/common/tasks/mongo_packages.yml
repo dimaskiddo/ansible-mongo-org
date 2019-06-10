@@ -1,0 +1,47 @@
+---
+- name: Install MongoDB Keyring
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+    state: present
+  when:
+    - mongo_distribution == 'mongodb-org'
+
+- name: Install MongoDB Repository
+  lineinfile:
+    dest: /etc/apt/sources.list.d/mongodb-org-{{ mongo_version_major }}.{{ mongo_version_minor }}.list
+    line: "deb [arch=amd64] http://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/{{ mongo_version_major }}.{{ mongo_version_minor }} multiverse"
+    create: yes
+    state: present
+  when:
+    - mongo_distribution == 'mongodb-org'
+
+- name: Install MongoDB Node Packages
+  apt:
+    name: "{{ item }}"
+    force_apt_get: yes
+    update_cache: yes
+    dpkg_options: "force-confdef,force-confold,force-confmiss"
+    state: present
+  with_items:
+    - mongodb-org-server
+    - mongodb-org-shell
+    - mongodb-org-tools
+  when:
+    - mongo_distribution == 'mongodb-org'
+    - inventory_hostname not in groups['mongos']
+
+- name: Install MongoDB Router Packages
+  apt:
+    name: "{{ item }}"
+    force_apt_get: yes
+    update_cache: yes
+    dpkg_options: "force-confdef,force-confold,force-confmiss"
+    state: present
+  with_items:
+    - mongodb-org-mongos
+    - mongodb-org-shell
+    - mongodb-org-tools
+  when:
+    - mongo_distribution == 'mongodb-org'
+    - inventory_hostname in groups['mongos']

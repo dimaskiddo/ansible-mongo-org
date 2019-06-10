@@ -1,0 +1,22 @@
+---
+- name: Generate Script For Intiate MongoDB Node Superuser
+  template:
+    src: mongod_create_admin.js.j2
+    dest: /tmp/mongod_create_admin.js
+    owner: root
+    group: root
+    mode: 0644
+  when:
+    - primary
+
+- name: Intiate MongoDB Node Superuser
+  shell: mongo admin --port {{ mongo_port }} /tmp/mongod_create_admin.js
+  when:
+    - primary
+  
+- name: Clean-up Generated Script For Intiate MongoDB Node Superuser
+  file:
+    path: /tmp/mongod_create_admin.js
+    state: absent
+  when:
+    - primary

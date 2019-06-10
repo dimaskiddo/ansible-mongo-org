@@ -1,0 +1,8 @@
+---
+- include: facts.yml
+
+- include: mongos_configs.yml
+
+- include: mongos_services.yml
+
+- include: mongos_shard_add.yml

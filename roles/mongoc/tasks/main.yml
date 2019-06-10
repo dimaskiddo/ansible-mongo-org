@@ -1,0 +1,12 @@
+---
+- include: facts.yml
+
+- include: mongoc_configs.yml
+
+- include: mongoc_services.yml
+
+- include: mongoc_replicaset_init.yml
+
+- include: mongoc_create_admin.yml
+  
+- include: mongoc_replicaset_add.yml

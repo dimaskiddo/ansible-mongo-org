@@ -1,0 +1,3 @@
+---
+# Default Value MongoDB Config Server Port
+mongo_port: '27013'

@@ -1,0 +1,38 @@
+# Shere to write logging data.
+systemLog:
+  destination: file
+  path: /var/log/mongodb/mongod.log
+  logAppend: true
+
+# Where and how to store data.
+storage:
+  dbPath: /var/lib/mongodb/data
+  journal:
+    enabled: true
+
+# How the process runs
+processManagement:
+  fork: true
+  pidFilePath: /var/run/mongodb/mongod.pid
+
+# Network interfaces
+net:
+  port: {{ mongo_port }}
+  bindIp: {{ mongo_ip }},localhost
+
+# How to secure it
+security:
+  authorization: enabled
+  keyFile: /var/lib/mongodb/pki/keyfile.pem
+
+# How to profile it
+operationProfiling:
+  slowOpThresholdMs: 250
+
+# Where to replicate
+replication:
+  replSetName: repl-{{ replica_name }}
+
+# How shard runs
+sharding:
+  clusterRole: shardsvr

@@ -1,0 +1,53 @@
+---
+- name: Generate MongoDB Router Service (Init)
+  template:
+    src: mongos.j2
+    dest: /etc/init.d/mongos
+    owner: root
+    group: root
+    mode: 0755
+  when:
+    - service_init_status.stat.islnk is defined
+    - not service_init_status.stat.islnk
+
+- name: Generate MongoDB Router Service (SystemD)
+  template:
+    src: mongos.service.j2
+    dest: /etc/systemd/system/mongos.service
+    owner: root
+    group: root
+    mode: 0644
+  when:
+    - service_init_status.stat.islnk is defined
+    - service_init_status.stat.islnk
+
+- name: Reload MongoDB Service
+  systemd:
+    daemon_reload: yes
+  when:
+    - service_init_status.stat.islnk is defined
+    - service_init_status.stat.islnk
+
+- name: Get MongoDB Router Service Info
+  shell: service mongos status | grep not-found || true
+  args:
+    warn: false
+  register: mongos_service_info
+  when:
+    - service_init_status.stat.exists
+
+- name: Enable MongoDB Router Service
+  service:
+    name: mongos
+    enabled: yes
+    state: restarted
+  when:
+    - mongos_service_info.stdout.find("not-found") == -1
+
+- name: Wait For MongoDB Router Service
+  wait_for:
+    port: "{{ mongo_port }}"
+    timeout: 15
+    connect_timeout: 3
+    delay: 5
+    state: present

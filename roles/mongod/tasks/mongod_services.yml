@@ -1,0 +1,32 @@
+---
+- name: Reload MongoDB Service
+  systemd:
+    daemon_reload: yes
+  when:
+    - service_init_status.stat.islnk is defined
+    - service_init_status.stat.islnk
+
+- name: Get MongoDB Node Service Info
+  shell: service mongod status | grep not-found || true
+  args:
+    warn: false
+  register: mongod_service_info
+  when:
+    - service_init_status.stat.exists
+
+- name: Enable MongoDB Node Service
+  service:
+    name: mongod
+    enabled: yes
+    state: restarted
+  when:
+    - mongod_service_info.stdout.find("not-found") == -1
+
+- name: Wait For MongoDB Node Service
+  wait_for:
+    host: "{{ mongo_ip }}"    
+    port: "{{ mongo_port }}"
+    timeout: 15
+    connect_timeout: 3
+    delay: 5
+    state: present

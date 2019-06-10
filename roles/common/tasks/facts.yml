@@ -1,0 +1,72 @@
+---
+- name: Fail if Operating System is not Supported
+  fail:
+    msg: "Minimum Operating System Version Ubuntu 14.04"
+  when:
+    - ansible_distribution != 'Ubuntu'
+    - ansible_distribution_major_version | int >= 14
+
+- name: Fail if Required Variable is not defined
+  fail:
+    msg: "Variable {{ item }} should be defined"
+  when:
+    - item is not defined or item == ""
+  with_items:
+    - zfs_dataset_size_mongoc
+    - zfs_dataset_size_mongod
+
+- name: Get Service Init Status
+  stat:
+    path: /sbin/init
+  register: service_init_status
+
+- name: Get ZFS Block Device Status
+  stat:
+    path: "/dev/{{ zfs_block_device }}"
+  register: zfs_block_status
+  when:
+    - zfs_block_device is defined
+
+- name: Get ZFS Block Device Info
+  parted:
+    device: "/dev/{{ zfs_block_device }}"
+    unit: MiB
+  register: zfs_block_info
+  when:
+    - zfs_block_device is defined
+    - zfs_block_status.stat.exists
+
+- name: Set Host Facts
+  set_fact:
+    mongo_ip: "{{ mongo_ip | default(default_value, true) }}"
+    mongo_distribution: "{{ mongo_distribution | default(default_value, true) }}"
+    mongo_version_major: "{{ mongo_version_major | default(default_value, true) }}"
+    mongo_version_minor: "{{ mongo_version_minor | default(default_value, true) }}"
+    mongo_admin_password: "{{ mongo_admin_password | default(default_value, true) }}"
+    zfs_backend: "{{ zfs_backend if zfs_block_device is defined else 'false' | default(default_value, true) }}"
+    zfs_pool_name: "{{ zfs_pool_name | default(default_value, true) }}"
+    zfs_dataset_wipe: "{{ zfs_dataset_wipe | default(default_value, true) }}"
+    zfs_pool_wipe: "{{ zfs_pool_wipe | default(default_value, true) }}"
+    zfs_block_wipe: "{{ zfs_block_wipe if zfs_block_device is defined else 'false' | default(default_value, true) }}"
+    primary: "{{ primary | default(default_value, true) }}"
+    arbiter: "{{ arbiter | default(default_value, true) }}"
+
+- name: Make Sure Primary Node is not Arbiter Node
+  set_fact:
+    arbiter: 'false'
+  when:
+    - primary
+
+- name: Make Sure ZFS Backend not Enabled if ZFS Block Device not Exist
+  set_fact:
+    zfs_backend: 'false'
+  when:
+    - zfs_backend
+    - not zfs_block_status.stat.exists
+
+- name: Make Sure ZFS Backend not Enabled if Node is an Arbiter Node
+  set_fact:
+    zfs_backend: 'false'
+  when:
+    - zfs_backend
+    - arbiter

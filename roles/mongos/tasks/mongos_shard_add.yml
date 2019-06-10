@@ -1,0 +1,19 @@
+---
+- name: Generate Script For Adding MongoDB ReplicaSet Node as Shard
+  template:
+    src: mongos_shard_add.js.j2
+    dest: /tmp/mongos_shard_add.js
+    owner: root
+    group: root
+    mode: 0644
+  run_once: true
+
+- name: Adding MongoDB ReplicaSet Node as Shard
+  shell: mongo admin --port {{ mongo_port }} -u admin -p {{ mongo_admin_password }} /tmp/mongos_shard_add.js
+  run_once: true
+  
+- name: Clean-up Generated Script For Adding MongoDB ReplicaSet Node as Shard
+  file:
+    path: /tmp/mongos_shard_add.js
+    state: absent
+  run_once: true

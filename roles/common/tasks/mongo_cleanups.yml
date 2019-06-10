@@ -1,0 +1,45 @@
+---
+- name: Remove Exsisting MongoDB Databases
+  shell: rm -rf /var/lib/mongodb/*
+  args:
+    warn: false
+
+- name: Find Exsisting MongoDB Configurations
+  find:
+    paths: /etc
+    patterns: "mongo*"
+    use_regex: true
+  register: mongo_configs
+
+- name: Remove Exsisting MongoDB Configurations
+  file:
+    path: "{{ item['path'] }}"
+    state: absent
+  with_items:
+    - "{{ mongo_configs['files'] }}"
+
+- name: Remove Exsisting MongoDB Logs
+  shell: rm -rf /var/log/mongodb/*
+  args:
+    warn: false
+
+- name: Remove Exsisting MongoDB Logs Directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /var/log/mongodb
+
+- name: Find Exsisting MongoDB Scripts
+  find:
+    paths: /tmp
+    patterns: "mongo*"
+    use_regex: true
+  register: mongo_scripts
+
+- name: Remove Exsisting MongoDB Scripts
+  file:
+    path: "{{ item['path'] }}"
+    state: absent
+  with_items:
+    - "{{ mongo_scripts['files'] }}"

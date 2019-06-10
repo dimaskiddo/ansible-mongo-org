@@ -1,0 +1,33 @@
+---
+# Default Value for Full Uninstall
+full_uninstall: 'false'
+
+# Default Value for MongoDB Distribution
+mongo_distribution: 'percona'
+
+# Default Value for MongoDB Major Version
+mongo_version_major: '3'
+
+# Default Value for MongoDB Minor Version
+mongo_version_minor: '6'
+
+# Default Value for ZFS Backend Storage
+zfs_backend: 'false'
+
+# Default Value for ZFS Pool Name
+zfs_pool_name: 'data'
+
+# Default Value for ZFS Dataset Wipe
+zfs_dataset_wipe: 'false'
+
+# Default Value for ZFS Pool Wipe
+zfs_pool_wipe: 'false'
+
+# Default Value for ZFS Block Wipe
+zfs_block_wipe: 'false'
+
+# Default Value MongoDB Primary Node Flag
+primary: 'false'
+
+# Default Value MongoDB Arbiter Node Flag
+arbiter: 'false'

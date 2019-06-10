@@ -1,0 +1,20 @@
+---
+- hosts: all
+  any_errors_fatal: true
+  roles:
+  - role: common
+
+- hosts: mongoc
+  any_errors_fatal: true
+  roles:
+  - role: mongoc
+
+- hosts: mongod
+  any_errors_fatal: true
+  roles:
+  - role: mongod
+
+- hosts: mongos
+  any_errors_fatal: true
+  roles:
+  - role: mongos

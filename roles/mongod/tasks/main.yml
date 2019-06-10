@@ -1,0 +1,12 @@
+---
+- include: facts.yml
+
+- include: mongod_configs.yml
+
+- include: mongod_services.yml
+
+- include: mongod_replicaset_init.yml
+
+- include: mongod_create_admin.yml
+
+- include: mongod_replicaset_add.yml

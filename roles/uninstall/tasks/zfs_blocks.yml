@@ -1,0 +1,32 @@
+---
+- name: Get ZFS Dataset Lists
+  shell: zfs list
+  register: zfs_dataset_lists
+
+- name: Remove ZFS Dataset for MongoDB
+  shell: zfs destroy -fR {{ zfs_pool_name }}/mongodb
+  when:
+    - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") != -1
+
+- name: Get ZFS Pool Lists
+  shell: zpool list
+  register: zfs_pool_lists
+  when:
+    - zfs_pool_wipe
+
+- name: Remove ZFS Pool for MongoDB
+  shell: zpool destroy -f {{ zfs_pool_name }}
+  when:
+    - zfs_pool_wipe
+    - zfs_pool_lists.stdout.find(zfs_pool_name) != -1
+
+- name: Clean ZFS Block Device for MongoDB
+  parted:
+    device: "/dev/{{ zfs_block_device }}"
+    number: "{{ item.num }}"
+    state: absent
+  with_items:
+    - "{{ zfs_block_info.partitions }}"
+  when:
+    - zfs_block_wipe
+    - zfs_block_info.partitions | length > 0

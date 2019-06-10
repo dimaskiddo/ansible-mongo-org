@@ -1,0 +1,4 @@
+---
+- name: Set Host Facts
+  set_fact:
+    mongo_port: "{{ mongo_port | default(default_value, true) }}"

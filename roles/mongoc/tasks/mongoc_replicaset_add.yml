@@ -1,0 +1,19 @@
+---
+- name: Generate Script For Adding Other MongoDB Config Server ReplicaSet
+  template:
+    src: mongoc_replicaset_add.js.j2
+    dest: /tmp/mongoc_replicaset_add.js
+    owner: root
+    group: root
+    mode: 0644
+  run_once: true
+  
+- name: Adding Other MongoDB Config Server ReplicaSet
+  shell: mongo admin --port {{ mongo_port }} -u admin -p {{ mongo_admin_password }} /tmp/mongoc_replicaset_add.js
+  run_once: true
+  
+- name: Clean-up Generated Script For Adding Other MongoDB Config Server ReplicaSet
+  file:
+    path: /tmp/mongoc_replicaset_add.js
+    state: absent
+  run_once: true
