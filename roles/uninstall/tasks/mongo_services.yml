@@ -5,8 +5,8 @@
     warn: false
   register: mongos_service_info
   when:
-    - service_init_status.stat.exists
     - inventory_hostname in groups['mongos']
+    - service_init_status.stat.exists
 
 - name: Disable MongoDB Router Service
   service:
@@ -14,8 +14,8 @@
     enabled: no
     state: stopped
   when:
-    - mongos_service_info.stdout.find("not-found") == -1
     - inventory_hostname in groups['mongos']
+    - mongos_service_info.stdout.find("not-found") == -1
 
 - name: Wait for 5 Seconds Before Killing All MongoDB Router Service
   wait_for:
@@ -50,18 +50,18 @@
     path: /etc/init.d/mongos
     state: absent
   when:
+    - inventory_hostname in groups['mongos']
     - service_init_status.stat.islnk is defined
     - not service_init_status.stat.islnk
-    - inventory_hostname in groups['mongos']
 
 - name: Remove MongoDB Router Service (SysV)
   file:
     path: /etc/systemd/system/mongos.service
     state: absent
   when:
+    - inventory_hostname in groups['mongos']
     - service_init_status.stat.islnk is defined
     - service_init_status.stat.islnk
-    - inventory_hostname in groups['mongos']
 
 - name: Get MongoDB Node Service Info
   shell: service mongod status | grep not-found || true
@@ -69,8 +69,8 @@
     warn: false
   register: mongod_service_info
   when:
-    - service_init_status.stat.exists
     - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
+    - service_init_status.stat.exists
 
 - name: Disable MongoDB Node Service
   service:
@@ -78,8 +78,8 @@
     enabled: no
     state: stopped
   when:
-    - mongod_service_info.stdout.find("not-found") == -1
     - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
+    - mongod_service_info.stdout.find("not-found") == -1
 
 - name: Wait for 5 Seconds Before Killing All MongoDB Node Service
   wait_for:

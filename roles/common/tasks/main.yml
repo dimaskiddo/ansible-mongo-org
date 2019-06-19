@@ -7,13 +7,13 @@
 
 - include: zfs_packages.yml
   when:
-    - zfs_backend
     - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
+    - zfs_backend
 
 - include: zfs_blocks.yml
   when:
-    - zfs_backend
     - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
+    - zfs_backend
 
 - include: mongo_users.yml
 
@@ -25,8 +25,8 @@
 
 - include: zfs_mounts.yml
   when:
-    - zfs_backend
     - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
+    - zfs_backend
 
 - include: mongo_directories.yml
 

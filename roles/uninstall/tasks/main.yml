@@ -9,9 +9,9 @@
 
 - include: zfs_mounts.yml
   when:
-    - full_uninstall
-    - zfs_backend
     - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
+    - zfs_backend
+    - full_uninstall
 
 - include: mongo_directories.yml
 
@@ -25,8 +25,8 @@
 
 - include: zfs_blocks.yml
   when:
-    - full_uninstall
-    - zfs_backend
     - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
+    - zfs_backend
+    - full_uninstall
 
 - include: os_cleanups.yml
