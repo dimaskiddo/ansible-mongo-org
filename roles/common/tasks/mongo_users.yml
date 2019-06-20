@@ -1,14 +1,14 @@
 ---
 - name: Create MongoDB Group
   group:
-    name: mongod
+    name: mongodb
     system: yes
     state: present
 
 - name: Create MongoDB User
   user:
-    name: mongod
-    group: mongod
+    name: mongodb
+    group: mongodb
     shell: /bin/false
     home: /var/lib/mongod
     create_home: no

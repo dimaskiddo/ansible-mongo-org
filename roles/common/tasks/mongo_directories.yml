@@ -3,8 +3,8 @@
   file:
     path: "{{ item }}"
     state: directory
-    owner: mongod
-    group: mongod
+    owner: mongodb
+    group: mongodb
     recurse: true
   with_items:
     - /var/lib/mongodb
@@ -16,8 +16,8 @@
   file:
     path: "{{ item }}"
     state: directory
-    owner: mongod
-    group: mongod
+    owner: mongodb
+    group: mongodb
     recurse: true
   with_items:
     - /var/run/mongodb
@@ -26,6 +26,6 @@
   file:
     src: /var/lib/mongodb/log
     dest: /var/log/mongodb
-    owner: mongod
-    group: mongod
+    owner: mongodb
+    group: mongodb
     state: link

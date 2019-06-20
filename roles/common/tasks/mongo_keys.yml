@@ -10,8 +10,8 @@
   copy:
     src: /tmp/mongodb_keyfile.pem
     dest: /var/lib/mongodb/pki/keyfile.pem
-    owner: mongod
-    group: mongod
+    owner: mongodb
+    group: mongodb
     mode: 0400
 
 - name: Remove Generated MongoDB Keyfile

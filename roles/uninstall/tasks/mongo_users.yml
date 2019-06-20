@@ -1,11 +1,11 @@
 ---
 - name: Remove MongoDB User
   user:
-    name: mongod
+    name: mongodb
     force: yes
     state: absent
 
 - name: Remove MongoDB Group
   group:
-    name: mongod
+    name: mongodb
     state: absent
