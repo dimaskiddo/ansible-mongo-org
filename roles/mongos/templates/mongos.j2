@@ -23,8 +23,8 @@ OPTIONS=" -f $CONFIGFILE"
 # for now.  This can go away when this script stops supporting 1.8.
 mongos=/usr/bin/mongos
 PIDFILE=/var/run/mongodb/mongos.pid
-MONGO_USER=mongod
-MONGO_GROUP=mongod
+MONGO_USER=mongodb
+MONGO_GROUP=mongodb
 
 if [ -f "$SYSCONFIG" ]; then
     . "$SYSCONFIG"
