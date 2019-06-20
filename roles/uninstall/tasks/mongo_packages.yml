@@ -32,11 +32,11 @@
     path: /etc/apt/sources.list.d/mongodb-org-{{ mongo_version_major }}.{{ mongo_version_minor }}.list
     state: absent
   when:
-    - galera_distribution == 'mongodb-org'
+    - mongo_distribution == 'mongodb-org'
 
 - name: Uninstall MongoDB Keyring
   apt_key:
     id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
     state: absent
   when:
-    - galera_distribution == 'mongodb-org'
+    - mongo_distribution == 'mongodb-org'
