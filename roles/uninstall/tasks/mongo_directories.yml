@@ -6,13 +6,6 @@
   with_items:
     - /var/log/mongodb
 
-- name: Remove MongoDB Run Directory
-  file:
-    path: "{{ item }}"
-    state: absent
-  with_items:
-    - /var/run/mongodb
-
 - name: Remove MongoDB Databases Directory
   file:
     path: "{{ item }}"

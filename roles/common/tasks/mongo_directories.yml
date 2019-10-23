@@ -12,16 +12,6 @@
     - /var/lib/mongodb/log
     - /var/lib/mongodb/pki
 
-- name: Create MongoDB Run Directory
-  file:
-    path: "{{ item }}"
-    state: directory
-    owner: mongodb
-    group: mongodb
-    recurse: true
-  with_items:
-    - /var/run/mongodb
-
 - name: Create MongoDB Logs Directory
   file:
     src: /var/lib/mongodb/log

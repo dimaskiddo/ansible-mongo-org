@@ -12,8 +12,7 @@ storage:
 
 # How the process runs
 processManagement:
-  fork: true
-  pidFilePath: /var/run/mongodb/mongod.pid
+  timeZoneInfo: /usr/share/zoneinfo
 
 # Network interfaces
 net:
@@ -34,6 +33,8 @@ operationProfiling:
 replication:
   replSetName: repl-{{ replica_name }}
 
+{% if groups['mongoc'] | length > 0 and groups['mongos'] | length > 0 %}
 # How shard runs
 sharding:
   clusterRole: shardsvr
+{% endif %}
