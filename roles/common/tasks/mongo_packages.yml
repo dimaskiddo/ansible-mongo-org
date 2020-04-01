@@ -2,7 +2,7 @@
 - name: Install MongoDB Keyring
   apt_key:
     keyserver: keyserver.ubuntu.com
-    id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+    id: "{{ mongo_repository_keyring }}"
     state: present
   when:
     - mongo_distribution == 'mongodb-org'

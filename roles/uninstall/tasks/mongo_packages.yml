@@ -36,7 +36,7 @@
 
 - name: Uninstall MongoDB Keyring
   apt_key:
-    id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+    id: "{{ mongo_repository_keyring }}"
     state: absent
   when:
     - mongo_distribution == 'mongodb-org'
