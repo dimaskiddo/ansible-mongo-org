@@ -72,7 +72,7 @@
     - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") == -1
 
 - name: Create ZFS Dataset for MongoDB for MongoDB Node
-  shell: zfs create -s -V {{ zfs_dataset_size_mongod }} {{ zfs_pool_name }}/mongodb
+  shell: zfs create -s -o volblocksize=64k -V {{ zfs_dataset_size_mongod }} {{ zfs_pool_name }}/mongodb
   when:
     - inventory_hostname in groups['mongod']
     - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") == -1
