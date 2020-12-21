@@ -11,9 +11,6 @@ mongo_version_major: '3'
 # Default Value for MongoDB Minor Version
 mongo_version_minor: '6'
 
-# Default Value for MongoDB Repository Keyring
-mongo_repository_keyring: '2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5'
-
 # Default Value MongoDB Admin Password
 mongo_admin_password: 'admin'
 
