@@ -1,7 +1,6 @@
 ---
 - name: Install MongoDB Keyring
   apt_key:
-    keyserver: keyserver.ubuntu.com:80
     url: "https://www.mongodb.org/static/pgp/server-{{ mongo_version_major }}.{{ mongo_version_minor }}.asc"
     state: present
   when:
