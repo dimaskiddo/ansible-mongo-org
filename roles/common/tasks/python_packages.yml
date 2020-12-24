@@ -11,5 +11,6 @@
 - name: Install PyMongo Packages from Python PIP
   pip:
     name: pymongo
+    extra_args: "--index-url https://pypi.python.org/simple"
     use_mirrors: no
     state: latest
