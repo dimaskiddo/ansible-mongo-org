@@ -76,8 +76,20 @@
     - inventory_hostname in groups['mongoc']
     - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") == -1
 
+- name: Configure ZFS Dataset Mountpoint for MongoDB Config Server
+  shell: zfs set mountpoint=legacy {{ zfs_pool_name }}/mongodb
+  when:
+    - inventory_hostname in groups['mongoc']
+    - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") == -1
+
 - name: Create ZFS Dataset for MongoDB Node
   shell: zfs create {{ zfs_pool_name }}/mongodb
+  when:
+    - inventory_hostname in groups['mongod']
+    - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") == -1
+
+- name: Configure ZFS Dataset Mountpoint for MongoDB Node
+  shell: zfs set mountpoint=legacy {{ zfs_pool_name }}/mongodb
   when:
     - inventory_hostname in groups['mongod']
     - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") == -1
