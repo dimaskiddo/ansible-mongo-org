@@ -4,13 +4,14 @@
     timeout: 5
 
 - name: Mount ZFS Dataset to MongoDB Directory
-  mount:
-    path: /var/lib/mongodb
-    src: "/dev/zvol/{{ zfs_pool_name }}/mongodb"
-    fstype: xfs
-    opts: defaults
-    passno: 2
-    state: mounted
+  shell: "mount -t zfs {{ zfs_pool_name }}/mongodb /var/lib/mongodb"
+
+- name: Configure FSTAB ZFS Dataset for MongoDB
+  lineinfile:
+    path: "/etc/fstab"
+    line: "{{ zfs_pool_name }}/mongodb /var/lib/mongodb zfs defaults 0 2"
+    backup: yes
+    state: present
 
 - name: Wait for 5 Seconds After Mounting ZFS Dataset
   wait_for:
