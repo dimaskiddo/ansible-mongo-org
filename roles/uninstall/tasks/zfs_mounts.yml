@@ -4,14 +4,7 @@
     timeout: 5
 
 - name: Unmount ZFS Dataset from MongoDB Directory
-  shell: "umount /var/lib/mongodb"
-
-- name: Configure FSTAB ZFS Dataset for MongoDB
-  lineinfile:
-    path: "/etc/fstab"
-    line: "{{ zfs_pool_name }}/mongodb /var/lib/mongodb zfs defaults 0 2"
-    backup: yes
-    state: absent
+  shell: "zfs umount {{ zfs_pool_name }}/mongodb"
 
 - name: Wait for 5 Seconds After Unmounting ZFS Dataset
   wait_for:
