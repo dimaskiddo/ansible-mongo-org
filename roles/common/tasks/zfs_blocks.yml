@@ -20,6 +20,7 @@
 - name: Create ZFS Block Device Partition for MongoDB
   parted:
     device: "/dev/{{ zfs_block_device }}"
+    name: "{{ 1000 | random | to_uuid | upper }}"
     number: 1
     label: gpt
     part_type: primary
