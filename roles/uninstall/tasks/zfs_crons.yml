@@ -1,0 +1,5 @@
+---
+- name: Enable ZFS Srub Cron
+  shell: "mv /etc/cron.disabled/zfsutils-linux /etc/cron.d/zfsutils-linux"
+  when:
+    - zfs_scrub_disable_cron

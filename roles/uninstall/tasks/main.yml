@@ -29,4 +29,9 @@
     - zfs_backend
     - full_uninstall
 
+- include: zfs_crons.yml
+  when:
+    - zfs_backend
+    - full_uninstall
+
 - include: os_cleanups.yml

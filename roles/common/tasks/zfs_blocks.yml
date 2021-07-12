@@ -21,6 +21,7 @@
   parted:
     device: "/dev/{{ zfs_block_device }}"
     number: 1
+    label: gpt
     part_type: primary
     part_start: 0%
     part_end: 100%
