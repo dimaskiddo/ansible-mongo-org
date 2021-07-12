@@ -10,6 +10,6 @@
     - zfs_scrub_disable_cron
 
 - name: Disable ZFS Srub Cron
-  shell: "mv /etc/cron.d/zfsutils-linux /etc/cron.disabled/zfsutils-linux"
+  shell: "mv /etc/cron.d/zfsutils-linux /etc/cron.disabled/zfsutils-linux || true"
   when:
     - zfs_scrub_disable_cron
