@@ -10,6 +10,11 @@
     - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
     - zfs_backend
 
+- include: zfs_crons.yml
+  when:
+    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
+    - zfs_backend
+
 - include: zfs_blocks.yml
   when:
     - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']

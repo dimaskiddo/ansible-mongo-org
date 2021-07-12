@@ -1,0 +1,15 @@
+---
+- name: Create Disabled Cron Directory as Backup
+  file:
+    path: /etc/cron.disabled
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when:
+    - zfs_scrub_disable_cron
+
+- name: Disable ZFS Srub Cron
+  shell: "mv /etc/cron.d/zfsutils-linux /etc/cron.disabled/zfsutils-linux"
+  when:
+    - zfs_scrub_disable_cron

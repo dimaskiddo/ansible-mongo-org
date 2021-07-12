@@ -17,6 +17,9 @@ mongo_admin_password: 'admin'
 # Default Value for ZFS Backend Storage
 zfs_backend: 'false'
 
+# Default Value for ZFS Scrub Disable Cron
+zfs_scrub_disable_cron: 'false'
+
 # Default Value for ZFS Pool Name
 zfs_pool_name: 'data'
 
