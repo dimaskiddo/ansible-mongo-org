@@ -4,7 +4,7 @@
     timeout: 5
 
 - name: Unmount ZFS Dataset from MongoDB Directory
-  shell: "zfs umount {{ zfs_pool_name }}/mongodb"
+  shell: "zfs umount {{ zfs_pool_name }}/mongodb || true"
 
 - name: Wait for 5 Seconds After Unmounting ZFS Dataset
   wait_for:

@@ -28,6 +28,11 @@
 
 - include: mongo_cleanups.yml
 
+- include: zfs_mounts.yml
+  when:
+    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
+    - zfs_backend
+
 - include: mongo_directories.yml
 
 - include: mongo_keys.yml
