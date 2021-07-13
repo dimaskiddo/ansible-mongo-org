@@ -39,7 +39,17 @@
   with_items:
     - "{{ mongo_configs['files'] }}"
 
-- name: Remove Exsisting MongoDB Databases
-  shell: rm -rf /var/lib/mongodb/*
+- name: Remove Exsisting MongoDB Data
+  shell: "rm -rf /var/lib/mongodb/data/* || true"
+  args:
+    warn: false
+
+- name: Remove Exsisting MongoDB Log
+  shell: "rm -rf /var/lib/mongodb/log/* || true"
+  args:
+    warn: false
+
+- name: Remove Exsisting MongoDB PKI
+  shell: "rm -rf /var/lib/mongodb/pki/* || true"
   args:
     warn: false
