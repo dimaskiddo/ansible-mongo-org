@@ -1,15 +1,16 @@
 ---
-- name: Create Disabled Cron Directory as Backup
+- name: Create Disabled Cron Directory
   file:
     path: /etc/cron.disabled
     state: directory
     owner: root
     group: root
     mode: 0755
+    recurse: true
   when:
-    - zfs_scrub_disable_cron
+    - zfs_disable_cron
 
-- name: Disable ZFS Srub Cron
-  shell: "mv /etc/cron.d/zfsutils-linux /etc/cron.disabled/zfsutils-linux || true"
+- name: Add Divert ZFS Utility Cron Job
+  shell: "dpkg-divert --add --rename --divert /etc/cron.disabled/zfsutils-linux /etc/cron.d/zfsutils-linux"
   when:
-    - zfs_scrub_disable_cron
+    - zfs_disable_cron

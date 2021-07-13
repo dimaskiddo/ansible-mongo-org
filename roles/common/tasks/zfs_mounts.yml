@@ -1,10 +1,54 @@
 ---
+- name: Create MongoDB Directory as ZFS Dataset Mountpoint
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+    recurse: true
+  with_items:
+    - /var/lib/mongodb
+    - /var/lib/mongodb/data
+    - /var/lib/mongodb/log
+    - /var/lib/mongodb/pki
+
 - name: Wait for 5 Seconds Before Mounting ZFS Dataset
   wait_for:
     timeout: 5
 
-- name: Mount ZFS Dataset to MongoDB Directory
-  shell: "zfs mount {{ zfs_pool_name }}/mongodb || true"
+- name: Mount ZFS Dataset to MongoDB Data Directory
+  mount:
+    src: "{{ zfs_pool_name }}/mongodb/data"
+    path: /var/lib/mongodb/data
+    fstype: zfs
+    opts: noatime,nofail,x-systemd.requires=zfs-import.target
+    dump: 0
+    passno: 0
+    state: mounted
+    backup: true
+
+- name: Mount ZFS Dataset to MongoDB Log Directory
+  mount:
+    src: "{{ zfs_pool_name }}/mongodb/log"
+    path: /var/lib/mongodb/log
+    fstype: zfs
+    opts: noatime,nofail,x-systemd.requires=zfs-import.target
+    dump: 0
+    passno: 0
+    state: mounted
+    backup: true
+
+- name: Mount ZFS Dataset to MongoDB PKI Directory
+  mount:
+    src: "{{ zfs_pool_name }}/mongodb/pki"
+    path: /var/lib/mongodb/pki
+    fstype: zfs
+    opts: noatime,nofail,x-systemd.requires=zfs-import.target
+    dump: 0
+    passno: 0
+    state: mounted
+    backup: true
 
 - name: Wait for 5 Seconds After Mounting ZFS Dataset
   wait_for:

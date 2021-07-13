@@ -5,6 +5,7 @@
     state: directory
     owner: mongodb
     group: mongodb
+    mode: 0755
     recurse: true
   with_items:
     - /var/lib/mongodb
@@ -12,7 +13,7 @@
     - /var/lib/mongodb/log
     - /var/lib/mongodb/pki
 
-- name: Create MongoDB Logs Directory
+- name: Create MongoDB Log Directory
   file:
     src: /var/lib/mongodb/log
     dest: /var/log/mongodb

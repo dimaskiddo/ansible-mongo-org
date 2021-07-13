@@ -17,8 +17,8 @@ mongo_repository_keyring: '2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5'
 # Default Value for ZFS Backend Storage
 zfs_backend: 'false'
 
-# Default Value for ZFS Scrub Disable Cron
-zfs_scrub_disable_cron: 'false'
+# Default Value for Disable ZFS Utility Cron Job
+zfs_disable_cron: 'false'
 
 # Default Value for ZFS Pool Name
 zfs_pool_name: 'data'

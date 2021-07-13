@@ -1,5 +1,5 @@
 ---
-- name: Remove MongoDB Logs Directory
+- name: Remove MongoDB Log Directory
   file:
     path: "{{ item }}"
     state: absent

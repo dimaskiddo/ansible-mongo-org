@@ -1,5 +1,5 @@
 ---
-- name: Enable ZFS Srub Cron
-  shell: "mv /etc/cron.disabled/zfsutils-linux /etc/cron.d/zfsutils-linux || true"
+- name: Remove Divert ZFS Utility Cron Job
+  shell: "dpkg-divert --remove --rename --divert /etc/cron.disabled/zfsutils-linux /etc/cron.d/zfsutils-linux"
   when:
-    - zfs_scrub_disable_cron
+    - zfs_disable_cron

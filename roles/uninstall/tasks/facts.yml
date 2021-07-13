@@ -34,7 +34,7 @@
     mongo_version_major: "{{ mongo_version_major | default(default_value, true) }}"
     mongo_version_minor: "{{ mongo_version_minor | default(default_value, true) }}"
     zfs_backend: "{{ zfs_backend if zfs_block_device is defined else 'false' | default(default_value, true) }}"
-    zfs_scrub_disable_cron: "{{ zfs_scrub_disable_cron | default(default_value, true) }}"
+    zfs_disable_cron: "{{ zfs_disable_cron | default(default_value, true) }}"
     zfs_pool_name: "{{ zfs_pool_name | default(default_value, true) }}"
     zfs_dataset_wipe: "{{ zfs_dataset_wipe | default(default_value, true) }}"
     zfs_pool_wipe: "{{ zfs_pool_wipe | default(default_value, true) }}"

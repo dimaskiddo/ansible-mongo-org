@@ -46,12 +46,7 @@
     - zfs_pool_lists.stdout.find(zfs_pool_name) != -1
 
 - name: Create ZFS Pool for MongoDB
-  shell: zpool create {{ zfs_pool_name }} -O compression=lz4 -o ashift=12 /dev/{{ zfs_block_device }}1
-  when:
-    - zfs_pool_lists.stdout.find(zfs_pool_name) == -1
-
-- name: Configure ZFS Pool Mountpoint for MongoDB
-  shell: zfs set mountpoint=none {{ zfs_pool_name }}
+  shell: zpool create {{ zfs_pool_name }} -O compression=lz4 -O atime=off -O mountpoint=none -o ashift=12 /dev/{{ zfs_block_device }}1
   when:
     - zfs_pool_lists.stdout.find(zfs_pool_name) == -1
 
@@ -72,26 +67,26 @@
     - not zfs_dataset_wipe
     - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") != -1
 
-- name: Create ZFS Dataset for MongoDB Config Server
-  shell: zfs create {{ zfs_pool_name }}/mongodb
+- name: Create ZFS Dataset for MongoDB
+  shell: zfs create -o mountpoint=none {{ zfs_pool_name }}/mongodb
   when:
-    - inventory_hostname in groups['mongoc']
+    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
     - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") == -1
 
-- name: Configure ZFS Dataset Mountpoint for MongoDB Config Server
-  shell: zfs set mountpoint=/var/lib/mongodb {{ zfs_pool_name }}/mongodb
+- name: Create ZFS Dataset for MongoDB Data
+  shell: zfs create -o mountpoint=legacy {{ zfs_pool_name }}/mongodb/data
   when:
-    - inventory_hostname in groups['mongoc']
-    - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") == -1
+    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
+    - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb/data") == -1
 
-- name: Create ZFS Dataset for MongoDB Node
-  shell: zfs create {{ zfs_pool_name }}/mongodb
+- name: Create ZFS Dataset for MongoDB Log
+  shell: zfs create -o mountpoint=legacy {{ zfs_pool_name }}/mongodb/log
   when:
-    - inventory_hostname in groups['mongod']
-    - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") == -1
+    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
+    - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb/log") == -1
 
-- name: Configure ZFS Dataset Mountpoint for MongoDB Node
-  shell: zfs set mountpoint=/var/lib/mongodb {{ zfs_pool_name }}/mongodb
+- name: Create ZFS Dataset for MongoDB PKI
+  shell: zfs create -o mountpoint=legacy {{ zfs_pool_name }}/mongodb/pki
   when:
-    - inventory_hostname in groups['mongod']
-    - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb") == -1
+    - inventory_hostname in groups['mongoc'] or inventory_hostname in groups['mongod']
+    - zfs_dataset_lists.stdout.find(zfs_pool_name ~ "/mongodb/pki") == -1
