@@ -23,10 +23,8 @@
     path: /var/lib/mongodb/data
     fstype: zfs
     opts: noatime,nofail,x-systemd.requires=zfs-import.target
-    dump: 0
-    passno: 0
     state: mounted
-    backup: true
+    backup: yes
 
 - name: Mount ZFS Dataset to MongoDB Log Directory
   mount:
@@ -34,10 +32,8 @@
     path: /var/lib/mongodb/log
     fstype: zfs
     opts: noatime,nofail,x-systemd.requires=zfs-import.target
-    dump: 0
-    passno: 0
     state: mounted
-    backup: true
+    backup: yes
 
 - name: Mount ZFS Dataset to MongoDB PKI Directory
   mount:
@@ -45,10 +41,8 @@
     path: /var/lib/mongodb/pki
     fstype: zfs
     opts: noatime,nofail,x-systemd.requires=zfs-import.target
-    dump: 0
-    passno: 0
     state: mounted
-    backup: true
+    backup: yes
 
 - name: Wait for 5 Seconds After Mounting ZFS Dataset
   wait_for:
