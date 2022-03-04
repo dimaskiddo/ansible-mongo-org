@@ -30,9 +30,15 @@
     dpkg_options: "force-confdef,force-confold,force-confmiss"
     state: present
   with_items:
+    - lsb-release
+    - bash-completion
     - ca-certificates
     - apt-transport-https
     - software-properties-common
+    - dirmngr
+    - gnupg
     - curl
     - wget
     - rsync
+    - logrotate
+    - byobu

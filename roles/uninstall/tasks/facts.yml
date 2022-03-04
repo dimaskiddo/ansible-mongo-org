@@ -1,10 +1,16 @@
 ---
+- name: Set fallback value for if distribution is not defined
+  set_fact:
+    ansible_distribution: '{{ ansible_lsb["id"] }}'
+  when:
+    - ansible_distribution is not defined
+
 - name: Fail if Operating System is not Supported
   fail:
-    msg: "Minimum Operating System Version Ubuntu 14.04"
+    msg: "Supported Operating System is Debian 64-bit"
   when:
-    - ansible_distribution != 'Ubuntu'
-    - ansible_distribution_major_version | int >= 14
+    - ansible_distribution != 'Debian'
+    - ansible_architecture != 'x86_64'
 
 - name: Get Service Init Status
   stat:

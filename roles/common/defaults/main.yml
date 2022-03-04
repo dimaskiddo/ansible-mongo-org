@@ -2,6 +2,9 @@
 # Default Value for Host IP
 mongo_ip: "{{ ansible_default_ipv4.address }}"
 
+# Default for Linux Image Type
+linux_image_type: 'cloud'
+
 # Default Value for MongoDB Distribution
 mongo_distribution: 'mongodb-org'
 

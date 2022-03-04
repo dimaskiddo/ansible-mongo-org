@@ -1,15 +1,53 @@
----
-- name: Install ZFS PPA Repository
-  apt_repository:
-    repo: "ppa:jonathonf/zfs"
+- name: Install ZFS Dependencies Packages (Cloud)
+  apt:
+    name: "{{ item }}"
+    force_apt_get: yes
+    update_cache: yes
+    state: present
+  with_items:
+    - linux-headers-cloud-amd64
+    - linux-image-cloud-amd64
+    - dpkg-dev
+  when:
+    - linux_image_type == 'cloud'
+
+- name: Install ZFS Dependencies Packages (Desktop)
+  apt:
+    name: "{{ item }}"
+    force_apt_get: yes
+    update_cache: yes
+    state: present
+  with_items:
+    - linux-headers-amd64
+    - linux-image-amd64
+    - dpkg-dev
+  when:
+    - linux_image_type == 'desktop'
+
+- name: Create ZFS Pre-Loaded Module File
+  blockinfile:
+    path: /etc/modules-load.d/zfs.conf
+    state: present
+    create: yes
+    owner: root
+    group: root
+    mode: 0644
+    block: |
+      zfs
 
 - name: Install ZFS Packages
   apt:
     name: "{{ item }}"
     force_apt_get: yes
     update_cache: yes
-    dpkg_options: "force-confdef,force-confold,force-confmiss"
     state: present
   with_items:
     - zfs-dkms
     - zfsutils-linux
+
+- name: Load ZFS Module to Kernel
+  modprobe:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - zfs

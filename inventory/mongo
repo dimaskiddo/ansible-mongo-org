@@ -1,4 +1,6 @@
 [all:vars]
+linux_image_type=desktop
+
 mongo_version_major=3
 mongo_version_minor=6
 mongo_admin_password=admin
